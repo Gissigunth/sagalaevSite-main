@@ -1,0 +1,33 @@
+{% extends 'main.htm' %}  <!-- Наследуем шаблон main.htm -->
+{% block content %}
+<div class="container-fluid justify-content-center mt-5">
+    <div class="row justify-content-center">
+        {% if news %}
+            <!-- Перебираем все новости, если они есть -->
+            {% for index, el in enumerate(news) %}
+            <div class="col-sm-4 mb-3">
+                <div class="card h-100 mb-3">
+                    <!-- Отображаем изображение новости -->
+                    <img src={{url_for("static",filename=el.photo)}} alt="" class="card-img-top">
+                    <div class="card-body">
+                        <!-- Отображаем название и краткое описание новости -->
+                        <h5 class="card-title">{{el.name}}</h5>
+                        <p class="card-text">{{el.short_description}}</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <!-- Flexbox для выравнивания времени и кнопки -->
+                        <small class="text-muted mr-auto">{{el.datetime}}</small>
+                        <!-- Время новости выравнивается влево с помощью mr-auto -->
+                        <a href="{{url_for('news_by_id',id=el.news_id)}}" class="btn btn-primary">Читать далее</a>
+                        <!-- Кнопка для перехода к полному описанию новости -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Сообщение, если новостей нет -->
+            <p>Нет новостей с таким заголовком.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

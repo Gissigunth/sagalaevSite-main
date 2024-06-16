@@ -1,0 +1,111 @@
+{% extends "main.htm" %} <!-- Наследуем основной шаблон -->
+
+{% block content %}
+
+<!-- Контейнер для отображения детальной информации о новости -->
+<div class="container-fluid align-self-center mt-5 mb-5">
+    <div class="row justify-content-center align-items-center">
+        <!-- Колонка для изображения новости -->
+        <div class="col-sm-3 text-center">
+            <div class="image-container" style="height: auto;">
+                <img src="{{ url_for('static', filename=item.photo) }}" style="max-width: 100%; height: 100%;">
+            </div>
+        </div>
+        <!-- Колонка для информации о новости -->
+        <div class="col-sm-8 text-center">
+            <div class="info">
+                <h1>{{ item.name }}</h1>
+                <h4>{{ item.datetime }}</h4>
+                <h3>Категория: {{ item.category.categories_name }}</h3>
+                <p>Подробная информация:</p>
+                <span>{{ item.full_description }}</span>
+                <p>Автор статьи:</p>
+                <span>{{ item.author.name }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Отображение flash-сообщений -->
+{% for category, message in flash_messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+{% endfor %}
+
+<!-- Кнопки лайка, дизлайка и сохранения статьи -->
+<div class="container-fluid text-center">
+    {% if current_user.is_authenticated %}
+        <div>
+            <!-- Отображаем кнопки, если пользователь еще не оценивал статью -->
+            {% if not user_interaction %}
+                <form action="{{ url_for('like_article', news_id=item.news_id) }}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-primary mr-2">Понравилось</button>
+                </form>
+                <form action="{{ url_for('dislike_article', news_id=item.news_id) }}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Не понравилось</button>
+                </form>
+            {% else %}
+                <!-- Отображаем сообщение, если пользователь уже оценил статью -->
+                <p>Вы уже оценили эту статью: {{ user_interaction.interaction_type }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Кнопка для сохранения статьи -->
+        {% if not user_interaction or user_interaction.interaction_type != 'save' %}
+            <div>
+                <form action="{{ url_for('save_article', news_id=item.news_id) }}" method="post">
+                    <button type="submit" class="btn btn-primary mt-2">Сохранить статью</button>
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- Раздел комментариев -->
+<div class="container-fluid mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-sm-8">
+            <h3 class="mb-4">Комментарии</h3>
+            <!-- Отображение списка комментариев -->
+            {% for comment in comments %}
+                <div class="comment mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <!-- Фото автора комментария -->
+                        {% if comment.author.photo %}
+                            <img src="{{ url_for('static', filename=comment.author.photo) }}" class="rounded-circle mr-2" style="width: 50px; height: 50px;" alt="User Photo">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='default_user_photo.jpg') }}" class="rounded-circle mr-2" style="width: 50px; height: 50px;" alt="User Photo">
+                        {% endif %}
+                        <!-- Информация о комментарии -->
+                        <div>
+                            <p><strong>{{ comment.author.name }}</strong> <em>{{ comment.datetime }}</em></p>
+                            <p>{{ comment.comment }}</p>
+                        </div>
+                    </div>
+                    <!-- Кнопка для удаления комментария, если текущий пользователь его автор -->
+                    {% if current_user.is_authenticated and current_user.author_id == comment.author_id %}
+                        <form action="{{ url_for('delete_comment', comment_id=comment.comment_id) }}" method="post">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <!-- Форма для добавления нового комментария -->
+            {% if current_user.is_authenticated %}
+                <form action="{{ url_for('add_comment', news_id=item.news_id) }}" method="post">
+                    <div class="form-group">
+                        <label for="comment">Добавить комментарий:</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Отправить</button>
+                </form>
+            {% else %}
+                <!-- Сообщение для неавторизованных пользователей -->
+                <p>Пожалуйста, <a href="{{ url_for('login') }}">войдите в систему</a>, чтобы оставлять комментарии.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

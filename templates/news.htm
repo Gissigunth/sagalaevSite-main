@@ -1,0 +1,22 @@
+﻿{% extends 'main.htm' %}
+{% block content %}
+<div class="container-fluid justify-content-center mt-5">
+    <div class="row justify-content-center">
+        {% for el in news %}
+        <div class="col-sm-4 mb-3">
+            <div class="card h-100 mb-3">
+                <img src={{url_for("static",filename = el.photo)}} alt="" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">{{el.name}}</h5>
+                    <p class="card-text">{{el.short_description}}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-end"> <!-- Flexbox для выравнивания кнопки -->
+                    <small class="text-muted mr-auto">{{el.datetime}}</small> <!-- Используем mr-auto для сдвига времени влево -->
+                    <a href="{{url_for('news_by_id',id=el.news_id)}}" class="btn btn-primary">Читать далее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

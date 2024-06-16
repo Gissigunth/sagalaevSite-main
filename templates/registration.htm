@@ -1,0 +1,53 @@
+{% extends "main.htm" %} <!-- Наследуем шаблон main.htm -->
+
+{% block content %}
+<section class="vh-100 bg-image">
+  <!-- Маска для применения градиентного фона и центрирования содержимого -->
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <!-- Центрирование формы регистрации -->
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <!-- Карточка для формы регистрации -->
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <!-- Заголовок формы -->
+              <h2 class="text-uppercase text-center mb-5">Регистрация</h2>
+
+              <!-- Форма регистрации -->
+              <form action="{{ url_for('register') }}" method="post">
+                <!-- Поле для ввода имени пользователя -->
+                <div class="form-outline mb-4">
+                  <input type="text" id="form3Example1cg" name="name" class="form-control form-control-lg" placeholder="Введите имя пользователя" required />
+                  <label class="form-label" for="form3Example1cg">Имя пользователя</label>
+                </div>
+
+                <!-- Поле для ввода пароля -->
+                <div class="form-outline mb-4">
+                  <input type="password" id="form3Example4cg" name="password" class="form-control form-control-lg" placeholder="Введите пароль" required />
+                  <label class="form-label" for="form3Example4cg">Пароль</label>
+                </div>
+
+                <!-- Поле для повторного ввода пароля -->
+                <div class="form-outline mb-4">
+                  <input type="password" id="form3Example4cdg" name="confirm_password" class="form-control form-control-lg" placeholder="Повторите ваш пароль" required />
+                  <label class="form-label" for="form3Example4cdg">Повторите ваш пароль</label>
+                </div>
+
+                <!-- Кнопка отправки формы -->
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-light">Зарегистрироваться</button>
+                </div>
+              </form>
+
+              <!-- Ссылка для перехода на страницу входа -->
+              <p class="text-center text-muted mt-5 mb-0">Уже есть аккаунт? <a href="{{ url_for('login') }}" class="fw-bold text-body"><u>Войти</u></a></p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
